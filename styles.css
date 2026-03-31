@@ -1260,6 +1260,113 @@ body::before {
 }
 
 /* ============================================
+   Speed View (Flashcard / Swipe Mode)
+   ============================================ */
+.speed-setup {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.speed-active {
+    max-width: 500px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.speed-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 60px 30px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 350px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.speed-card.swipe-left {
+    transform: translateX(-100px) rotate(-5deg);
+    opacity: 0;
+}
+
+.speed-card.swipe-right {
+    transform: translateX(100px) rotate(5deg);
+    opacity: 0;
+}
+
+.speed-card.swipe-down {
+    transform: translateY(100px);
+    opacity: 0;
+}
+
+.speed-word {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.speed-meaning {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+.speed-type {
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+}
+
+.speed-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.speed-btn {
+    flex: 1;
+    padding: 18px 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: var(--radius-lg);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    color: white;
+}
+
+.speed-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+}
+
+.speed-btn:active {
+    transform: scale(0.95);
+}
+
+.btn-unknown { background: linear-gradient(135deg, #e11d48, #be123c); box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4); }
+.btn-half { background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4); }
+.btn-known { background: linear-gradient(135deg, #059669, #047857); box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4); }
+
+.speed-hint {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 20px;
+}
+
+/* ============================================
    Responsive - Tablet (max 900px)
    ============================================ */
 @media (max-width: 900px) {

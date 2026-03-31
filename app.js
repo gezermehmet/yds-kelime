@@ -17,6 +17,10 @@
     let quizIndex = 0;
     let quizRevealed = false;
     let quizSessionResults = { known: 0, half: 0, unknown: 0 };
+    
+    // Speed State
+    let speedWords = [];
+    let speedIndex = 0;
 
     function getProgress() {
         return JSON.parse(localStorage.getItem(PACKS[currentPack].storageKey) || '{}');
@@ -73,8 +77,9 @@
             dayFilter.style.display = PACKS[currentPack].hasDays ? '' : 'none';
             dayFilter.parentElement.style.display = PACKS[currentPack].hasDays ? '' : 'none';
 
-            // Update quiz source options
+            // Update quiz & speed source options
             updateQuizSourceOptions();
+            updateSpeedSourceOptions();
 
             // Re-render current view
             updateStats();
@@ -104,6 +109,26 @@
         select.innerHTML = html;
     }
 
+    function updateSpeedSourceOptions() {
+        const select = document.getElementById('speed-source');
+        if (!select) return;
+        const words = getWords();
+        const hasDays = PACKS[currentPack].hasDays;
+
+        let html = `<option value="unknown-half">🏆 EN ZAYIF: Bilmediğim + Yarı Bildiğim</option>`;
+        html += `<option value="unknown">🚨 SADECE KIRMZI: Bilmediğim Kelimeler</option>`;
+        html += `<option value="all">Tüm Kelimeler (${words.length})</option>`;
+
+        if (hasDays) {
+            for (let d = 1; d <= 10; d++) {
+                const start = (d - 1) * 100 + 1;
+                const end = d * 100;
+                html += `<option value="day-${d}">${d}. Gün (${start}-${end})</option>`;
+            }
+        }
+        select.innerHTML = html;
+    }
+
     // Navigation
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', () => switchView(btn.dataset.view));
@@ -118,6 +143,7 @@
         if (view === 'cards') renderCards();
         if (view === 'groups') renderGroups();
         if (view === 'lists') renderLists();
+        if (view === 'speed') updateSpeedSourceOptions();
     }
 
     // ==========================================
@@ -349,6 +375,92 @@
     }
 
     // ==========================================
+    // SPEED VIEW (SWIPE / FLASHCARDS)
+    // ==========================================
+    document.getElementById('speed-start-btn').addEventListener('click', startSpeedView);
+    document.getElementById('speed-exit-btn').addEventListener('click', () => {
+        document.getElementById('speed-active').style.display = 'none';
+        document.getElementById('speed-setup').style.display = 'flex';
+    });
+    document.getElementById('speed-btn-known').addEventListener('click', () => speedAnswer('known', 'swipe-right'));
+    document.getElementById('speed-btn-half').addEventListener('click', () => speedAnswer('half', 'swipe-down'));
+    document.getElementById('speed-btn-unknown').addEventListener('click', () => speedAnswer('unknown', 'swipe-left'));
+
+    function startSpeedView() {
+        const source = document.getElementById('speed-source').value;
+        const progress = getProgress();
+        let words = [...getWords()];
+
+        if (source === 'unknown') words = words.filter(w => progress[w.id] === 'unknown');
+        else if (source === 'half') words = words.filter(w => progress[w.id] === 'half');
+        else if (source === 'unknown-half') words = words.filter(w => progress[w.id] === 'unknown' || progress[w.id] === 'half');
+        else if (source.startsWith('day-')) {
+            const day = parseInt(source.split('-')[1]);
+            words = words.filter(w => w.day === day);
+        }
+
+        if (words.length === 0) { alert('Harika! Bu filtreye uyan kelime kalmamış.'); return; }
+        
+        // Karışık sıra
+        for (let i = words.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [words[i], words[j]] = [words[j], words[i]];
+        }
+
+        speedWords = words;
+        speedIndex = 0;
+        document.getElementById('speed-setup').style.display = 'none';
+        document.getElementById('speed-active').style.display = 'block';
+        showSpeedWord();
+    }
+
+    function showSpeedWord() {
+        if (speedIndex >= speedWords.length) { 
+            alert('Tebrikler! Bu seriyi tamamladın.');
+            document.getElementById('speed-active').style.display = 'none';
+            document.getElementById('speed-setup').style.display = 'flex';
+            return; 
+        }
+        
+        const word = speedWords[speedIndex];
+        const card = document.getElementById('speed-card');
+        
+        // Kart animasyonunu sıfırla
+        card.className = 'speed-card';
+        void card.offsetWidth; // Force reflow
+        
+        document.getElementById('speed-word').textContent = word.en;
+        document.getElementById('speed-type').textContent = TYPE_LABELS[word.type] || word.type;
+        document.getElementById('speed-meaning').textContent = word.tr;
+        
+        const pct = (speedIndex / speedWords.length) * 100;
+        document.getElementById('speed-progress-fill').style.width = pct + '%';
+        document.getElementById('speed-counter').textContent = `${speedIndex + 1} / ${speedWords.length}`;
+    }
+
+    function speedAnswer(status, animationClass) {
+        const word = speedWords[speedIndex];
+        saveWordStatus(word.id, status);
+        
+        const card = document.getElementById('speed-card');
+        card.classList.add(animationClass);
+        
+        setTimeout(() => {
+            speedIndex++;
+            showSpeedWord();
+        }, 200); // animasyon süresi
+    }
+
+    // Klavye kontrolleri
+    document.addEventListener('keydown', (e) => {
+        if (currentView !== 'speed' || document.getElementById('speed-active').style.display === 'none') return;
+        
+        if (e.key === 'ArrowRight') speedAnswer('known', 'swipe-right');
+        else if (e.key === 'ArrowLeft') speedAnswer('unknown', 'swipe-left');
+        else if (e.key === 'ArrowDown') speedAnswer('half', 'swipe-down');
+    });
+
+    // ==========================================
     // LISTS VIEW
     // ==========================================
     document.querySelectorAll('.list-tab').forEach(tab => {
@@ -404,5 +516,6 @@
     }
     updateStats();
     updateQuizSourceOptions();
+    updateSpeedSourceOptions();
     renderCards();
 })();

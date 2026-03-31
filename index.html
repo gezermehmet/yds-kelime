@@ -39,6 +39,10 @@
                     <span class="nav-btn-icon">🎯</span>
                     <span>Test</span>
                 </button>
+                <button class="nav-btn" data-view="speed" id="nav-speed">
+                    <span class="nav-btn-icon">⚡</span>
+                    <span>Hızlı</span>
+                </button>
                 <button class="nav-btn" data-view="lists" id="nav-lists">
                     <span class="nav-btn-icon">📋</span>
                     <span>Listeler</span>
@@ -257,6 +261,54 @@
                         <span>Tekrar Dene</span>
                         <span class="btn-arrow">↻</span>
                     </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Speed Cards (Swipe) View -->
+        <section id="view-speed" class="view">
+            <div class="view-header">
+                <h1>Hızlı Tekrar (Acil Durum Modu)</h1>
+                <p class="view-subtitle">Özellikle "Bilmediklerim" üzerinden saniyeler içinde devasa tekrar yap.</p>
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label>Kaynak: </label>
+                        <select id="speed-source">
+                            <!-- Filled in app.js -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="speed-setup" id="speed-setup">
+                <button class="quiz-start-btn" id="speed-start-btn">
+                    <span>🔥 Hızlı Tekrara Başla</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </div>
+
+            <div class="speed-active" id="speed-active" style="display: none;">
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="speed-progress-fill"></div>
+                </div>
+                <div class="quiz-counter" id="speed-counter">0 / 0</div>
+
+                <div class="speed-card" id="speed-card">
+                    <div class="speed-word" id="speed-word">word</div>
+                    <div class="speed-meaning" id="speed-meaning">anlam</div>
+                    <div class="speed-type" id="speed-type">isim</div>
+                </div>
+
+                <div class="speed-actions">
+                    <button class="speed-btn btn-unknown" id="speed-btn-unknown" title="Sol Ok Tuşu">❌ Bilmiyorum</button>
+                    <button class="speed-btn btn-half" id="speed-btn-half" title="Aşağı Ok Tuşu">🔶 Yarı Yarıya</button>
+                    <button class="speed-btn btn-known" id="speed-btn-known" title="Sağ Ok Tuşu">✅ Biliyorum</button>
+                </div>
+                
+                <p class="speed-hint">İpucu: Bilgisayarda klavyedeki "Sağ / Sol / Aşağı" yön tuşlarını kullanabilirsin.</p>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="filter-group" id="speed-exit-btn" style="padding:10px 20px; border-radius:10px; cursor:pointer;">Çıkış Yap</button>
                 </div>
             </div>
         </section>
