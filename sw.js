@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yds-kelime-v1';
+const CACHE_NAME = 'yds-kelime-v2';
 const ASSETS = [
     './',
     './index.html',
