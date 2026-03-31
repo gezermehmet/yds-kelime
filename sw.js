@@ -1,14 +1,14 @@
 const CACHE_NAME = 'yds-kelime-v1';
 const ASSETS = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/app.js',
-    '/words.js',
-    '/words_pdf.js',
-    '/manifest.json',
-    '/icon-192.png',
-    '/icon-512.png',
+    './',
+    './index.html',
+    './styles.css',
+    './app.js',
+    './words.js',
+    './words_pdf.js',
+    './manifest.json',
+    './icon-192.png',
+    './icon-512.png',
     'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap'
 ];
 
@@ -47,7 +47,7 @@ self.addEventListener('fetch', event => {
             .catch(() => {
                 // Offline fallback
                 if (event.request.destination === 'document') {
-                    return caches.match('/index.html');
+                    return caches.match('./index.html');
                 }
             })
     );
