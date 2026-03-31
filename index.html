@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YDS Kelime Paketleri - Kelime Kartları & Test</title>
+    <meta name="description" content="YDS sınavı için en çok çıkan 1000 kelime. Kelime kartları, renk kodlu anlam, eş anlamlılar ve kelime testi.">
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="YDS Kelime">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav id="main-nav">
+            <div class="nav-brand">
+                <span class="nav-icon">📚</span>
+                <span class="nav-title">YDS</span>
+            </div>
+            <div class="nav-links">
+                <button class="nav-btn active" data-view="cards" id="nav-cards">
+                    <span class="nav-btn-icon">🃏</span>
+                    <span>Kartlar</span>
+                </button>
+                <button class="nav-btn" data-view="groups" id="nav-groups">
+                    <span class="nav-btn-icon">📂</span>
+                    <span>Gruplar</span>
+                </button>
+                <button class="nav-btn" data-view="quiz" id="nav-quiz">
+                    <span class="nav-btn-icon">🎯</span>
+                    <span>Test</span>
+                </button>
+                <button class="nav-btn" data-view="lists" id="nav-lists">
+                    <span class="nav-btn-icon">📋</span>
+                    <span>Listeler</span>
+                </button>
+            </div>
+            <div class="nav-stats">
+                <div class="stat-pill known" id="stat-known">
+                    <span class="stat-icon">✅</span>
+                    <span class="stat-count">0</span>
+                </div>
+                <div class="stat-pill half" id="stat-half">
+                    <span class="stat-icon">🔶</span>
+                    <span class="stat-count">0</span>
+                </div>
+                <div class="stat-pill unknown" id="stat-unknown">
+                    <span class="stat-icon">❌</span>
+                    <span class="stat-count">0</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Pack Selector -->
+        <div id="pack-selector">
+            <button class="pack-btn active" data-pack="1000" id="pack-1000">
+                <span class="pack-icon">📖</span>
+                <span class="pack-name">1000 Kelime Kampı</span>
+                <span class="pack-count">1000</span>
+            </button>
+            <button class="pack-btn" data-pack="pdf" id="pack-pdf">
+                <span class="pack-icon">📄</span>
+                <span class="pack-name">YDS/YÖKDİL Essential</span>
+                <span class="pack-count" id="pdf-pack-count">346</span>
+            </button>
+        </div>
+
+        <!-- Cards View -->
+        <section id="view-cards" class="view active">
+            <div class="view-header">
+                <h1>Kelime Kartları</h1>
+                <div class="filter-bar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="Kelime ara..." autocomplete="off">
+                    </div>
+                    <div class="filter-group">
+                        <label>Duygu:</label>
+                        <select id="filter-sentiment">
+                            <option value="all">Tümü</option>
+                            <option value="positive">🟢 Olumlu</option>
+                            <option value="neutral">🟡 Nötr</option>
+                            <option value="negative">🔴 Olumsuz</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Tür:</label>
+                        <select id="filter-type">
+                            <option value="all">Tümü</option>
+                            <option value="verb">Fiil</option>
+                            <option value="noun">İsim</option>
+                            <option value="adjective">Sıfat</option>
+                            <option value="adverb">Zarf</option>
+                            <option value="phrase">Deyim/İfade</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Gün:</label>
+                        <select id="filter-day">
+                            <option value="all">Tümü</option>
+                            <option value="1">1. Gün (1-100)</option>
+                            <option value="2">2. Gün (101-200)</option>
+                            <option value="3">3. Gün (201-300)</option>
+                            <option value="4">4. Gün (301-400)</option>
+                            <option value="5">5. Gün (401-500)</option>
+                            <option value="6">6. Gün (501-600)</option>
+                            <option value="7">7. Gün (601-700)</option>
+                            <option value="8">8. Gün (701-800)</option>
+                            <option value="9">9. Gün (801-900)</option>
+                            <option value="10">10. Gün (901-1000)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="cards-count" id="cards-count">1000 kelime gösteriliyor</div>
+            </div>
+            <div class="cards-grid" id="cards-grid">
+                <!-- Cards rendered by JS -->
+            </div>
+        </section>
+
+        <!-- Groups View -->
+        <section id="view-groups" class="view">
+            <div class="view-header">
+                <h1>Kelime Grupları</h1>
+                <p class="view-subtitle">Kelimeleri türlerine ve anlamlarına göre gruplandırılmış olarak görün</p>
+                <div class="group-tabs" id="group-tabs">
+                    <button class="group-tab active" data-group="type">Türe Göre</button>
+                    <button class="group-tab" data-group="sentiment">Duygulara Göre</button>
+                    <button class="group-tab" data-group="semantic">Anlam Grupları</button>
+                </div>
+            </div>
+            <div class="groups-container" id="groups-container">
+                <!-- Groups rendered by JS -->
+            </div>
+        </section>
+
+        <!-- Quiz View -->
+        <section id="view-quiz" class="view">
+            <div class="quiz-setup" id="quiz-setup">
+                <div class="quiz-setup-card">
+                    <h1>🎯 Kelime Testi</h1>
+                    <p>İngilizce kelimeyi gör, Türkçesini hatırla!</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option-group">
+                            <label>Kelime Kaynağı:</label>
+                            <select id="quiz-source">
+                                <option value="all">Tüm Kelimeler (1000)</option>
+                                <option value="unknown">Bilmediğim Kelimeler</option>
+                                <option value="half">Yarı Bildiğim Kelimeler</option>
+                                <option value="unknown-half">Bilmediğim + Yarı Bildiğim</option>
+                                <option value="day-1">1. Gün (1-100)</option>
+                                <option value="day-2">2. Gün (101-200)</option>
+                                <option value="day-3">3. Gün (201-300)</option>
+                                <option value="day-4">4. Gün (301-400)</option>
+                                <option value="day-5">5. Gün (401-500)</option>
+                                <option value="day-6">6. Gün (501-600)</option>
+                                <option value="day-7">7. Gün (601-700)</option>
+                                <option value="day-8">8. Gün (701-800)</option>
+                                <option value="day-9">9. Gün (801-900)</option>
+                                <option value="day-10">10. Gün (901-1000)</option>
+                            </select>
+                        </div>
+                        <div class="quiz-option-group">
+                            <label>Sıralama:</label>
+                            <select id="quiz-order">
+                                <option value="random">Rastgele</option>
+                                <option value="sequential">Sıralı</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="quiz-start-btn" id="quiz-start-btn">
+                        <span>Teste Başla</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+            <div class="quiz-active" id="quiz-active" style="display:none;">
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+                </div>
+                <div class="quiz-counter" id="quiz-counter">1 / 100</div>
+                <div class="quiz-card-container">
+                    <div class="quiz-card" id="quiz-card">
+                        <div class="quiz-card-front" id="quiz-card-front">
+                            <span class="quiz-word-number" id="quiz-word-number">#1</span>
+                            <h2 class="quiz-word" id="quiz-word">abandon</h2>
+                            <p class="quiz-word-type" id="quiz-word-type">Fiil</p>
+                            <p class="quiz-hint">Anlamını görmek için tıkla</p>
+                        </div>
+                        <div class="quiz-card-back" id="quiz-card-back">
+                            <h3 class="quiz-meaning" id="quiz-meaning">terk etmek, vazgeçmek</h3>
+                            <p class="quiz-synonyms" id="quiz-synonyms">= leave, give up</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="quiz-actions" id="quiz-actions" style="display:none;">
+                    <button class="quiz-btn known" id="quiz-btn-known">
+                        <span class="quiz-btn-icon">✅</span>
+                        <span>Biliyorum</span>
+                    </button>
+                    <button class="quiz-btn half-known" id="quiz-btn-half">
+                        <span class="quiz-btn-icon">🔶</span>
+                        <span>Yarı Biliyorum</span>
+                    </button>
+                    <button class="quiz-btn not-known" id="quiz-btn-unknown">
+                        <span class="quiz-btn-icon">❌</span>
+                        <span>Bilmiyorum</span>
+                    </button>
+                </div>
+                <button class="quiz-exit-btn" id="quiz-exit-btn">Testi Bitir</button>
+            </div>
+            <div class="quiz-results" id="quiz-results" style="display:none;">
+                <div class="results-card">
+                    <h1>🏆 Test Sonucu</h1>
+                    <div class="results-stats">
+                        <div class="result-stat known">
+                            <span class="result-stat-icon">✅</span>
+                            <span class="result-stat-count" id="result-known">0</span>
+                            <span class="result-stat-label">Biliyorum</span>
+                        </div>
+                        <div class="result-stat half">
+                            <span class="result-stat-icon">🔶</span>
+                            <span class="result-stat-count" id="result-half">0</span>
+                            <span class="result-stat-label">Yarı Biliyorum</span>
+                        </div>
+                        <div class="result-stat unknown">
+                            <span class="result-stat-icon">❌</span>
+                            <span class="result-stat-count" id="result-unknown">0</span>
+                            <span class="result-stat-label">Bilmiyorum</span>
+                        </div>
+                    </div>
+                    <div class="results-percentage">
+                        <div class="percentage-ring" id="percentage-ring">
+                            <svg viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="54" fill="none" stroke="#2a2a3e" stroke-width="8"/>
+                                <circle cx="60" cy="60" r="54" fill="none" stroke="url(#grad)" stroke-width="8" stroke-linecap="round" id="progress-circle" stroke-dasharray="339.292" stroke-dashoffset="339.292"/>
+                                <defs>
+                                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#00d4aa;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <span class="percentage-text" id="percentage-text">0%</span>
+                        </div>
+                    </div>
+                    <button class="quiz-start-btn" id="quiz-restart-btn">
+                        <span>Tekrar Dene</span>
+                        <span class="btn-arrow">↻</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lists View -->
+        <section id="view-lists" class="view">
+            <div class="view-header">
+                <h1>Kelime Listeleri</h1>
+                <p class="view-subtitle">Bildiğin, yarı bildiğin ve bilmediğin kelimeleri takip et</p>
+                <div class="list-tabs" id="list-tabs">
+                    <button class="list-tab active" data-list="known">
+                        <span class="tab-icon">✅</span> Biliyorum
+                        <span class="tab-badge" id="list-known-count">0</span>
+                    </button>
+                    <button class="list-tab" data-list="half">
+                        <span class="tab-icon">🔶</span> Yarı Biliyorum
+                        <span class="tab-badge" id="list-half-count">0</span>
+                    </button>
+                    <button class="list-tab" data-list="unknown">
+                        <span class="tab-icon">❌</span> Bilmiyorum
+                        <span class="tab-badge" id="list-unknown-count">0</span>
+                    </button>
+                </div>
+            </div>
+            <div class="lists-container" id="lists-container">
+                <div class="empty-list-message" id="empty-list-message">
+                    <span class="empty-icon">📝</span>
+                    <p>Bu listede henüz kelime yok.</p>
+                    <p class="empty-hint">Test modunda kelimeleri değerlendirerek listelere ekleyebilirsin.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="words.js"></script>
+    <script src="words_pdf.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.log('SW failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>

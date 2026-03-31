@@ -1,0 +1,8 @@
+node_modules/
+.netlify/
+pdf_text.txt
+extract_pdf.js
+parse_pdf_words.js
+generate_words.js
+package.json
+package-lock.json
